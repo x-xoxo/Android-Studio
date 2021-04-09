@@ -9,8 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -21,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button g_btnClear, g_btnClearEntry, g_btnBackspace, g_btnCalc, g_btnPosNeg, g_btnDot, g_btnHistory;
     TextView textView, sumTextView;
     boolean isResult;
+    ArrayList<History> historyList;
 
     public void addOP(String op)
     {
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 sumTextView.setText((no1 / no2) + op);
                 setTextViewText(""+(no1 / no2));
             } else {
-                Log.w("addOP", "No operator found");
+                Log.w("addOP()", "No operator found");
                 return;
             }
         }
@@ -92,7 +92,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void Calc() {
         String num1 = sumTextView.getText().toString();
         String num2 = getTextViewText();
-        if (num1.contains("=")) {
+        if (num1.isEmpty())
+        {
+            return;
+        }
+        else if (num1.contains("=")) {
             String[] n = num1.split("=|\\+|-|×|÷");
             int len = n.length;
             if (num1.contains("+")) {
@@ -139,8 +143,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             sumTextView.setText(no1 + "÷" + no2 + "=");
             setTextViewText(""+(no1 / no2));
         } else {
-            Log.w("Clac", "No operator found");
+            Log.w("Calc()", "No operator found");
         }
+        num1 = sumTextView.getText().toString();
+        if (num1.contains("+")||num1.contains("-")||num1.contains("×")||num1.contains("÷"))
+        {
+            char op;
+            int res = Integer.parseInt(getTextViewText());
+            if (num1.contains("+"))
+                op='+';
+            else if (num1.contains("-"))
+                op='-';
+            else if (num1.contains("×"))
+                op='×';
+            else if (num1.contains("÷"))
+                op='÷';
+            else {
+                op = ' ';
+                Log.w("Calc()", "No Operator Found");
+            }
+            String[] n = num1.split("=|\\+|-|×|÷");
+            int len = n.length;
+            int n1 = Integer.parseInt(n[0]);
+            int n2 = Integer.parseInt(n[len-1]);
+
+            historyList.add(new History(n1,n2,res,op));
+
+//            for (int i=0;i<historyList.size();i++) {
+//                Log.i("historyList", String.valueOf(historyList.get(i)));
+//            }
+            for (History h : historyList)
+            {
+                Log.i("historyList", String.valueOf(h));
+            }
+            Log.i("historyList", "***************************");
+        }
+
     }
 
     public void clear() {
@@ -210,7 +248,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 addOP("÷");
 
             } else {
-                Log.w("OnClick", "Unknown button");
+                Log.w("OnClick()", "Unknown button");
             }
         }
         else
@@ -234,6 +272,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        historyList = new ArrayList<History>();
         /******************
         * Connect Buttons *
         ******************/
@@ -286,7 +326,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         g_btnHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i("OnClick()", "history btn Clicked.");
                 Intent intent = new Intent(getApplicationContext(), HistoryActivity.class);
+
+                // 1st way
+                //intent.putExtra("historyList", "abc");
+
+                // 2nd way
+                // intent.putExtra("historyList", historyList);
+
+                // 3rd way
+                intent.putParcelableArrayListExtra("historyList", historyList);
+
                 startActivity(intent);
             }
         });
