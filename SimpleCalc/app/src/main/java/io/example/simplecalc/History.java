@@ -54,4 +54,27 @@ public class History implements Parcelable {
         dest.writeInt(result);
         dest.writeInt((int) operator);
     }
+
+    public String getNumericalExpression() {
+        return "" + num1 + " " + operator + " " + num2 + " = ";
+    }
+
+    public String getResult() {
+        return format(""+result);
+    }
+    String format(String msg) {
+        msg = msg.replace(",", "");
+        StringBuffer sb = new StringBuffer();
+        int n = msg.length();
+        int cnt = 0;
+        for (int i=n-1; i>=0; i--) {
+            sb.append(msg.charAt(i));
+            cnt++;
+            if (n>3 && cnt%3==0 && i>0) {
+                sb.append(',');
+            }
+        }
+        String tmp = sb.reverse().toString();
+        return tmp;
+    }
 }
