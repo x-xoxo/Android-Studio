@@ -1,6 +1,8 @@
 package io.example.financialledger;
 
-public class TransactionalInfo {
+import java.io.Serializable;
+
+public class TransactionalInfo implements Serializable {
     private String date;
     private String desc;
     private String incomeExpenditure;
