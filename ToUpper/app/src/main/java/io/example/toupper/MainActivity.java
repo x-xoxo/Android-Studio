@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -44,21 +45,24 @@ public class MainActivity extends AppCompatActivity {
         btn_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (myService == null)
+                {
+                    Log.i("onClick", "myService == null");
+                    Toast.makeText(getApplicationContext(), "Service Connection Status -> NULL", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (et_inputData.getText().toString().isEmpty()) {
                     Toast.makeText(getApplicationContext(), "텍스트를 입력하세요.", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 else {
                     if (et_inputData.getText().toString().equals("hello")) {
+                        process_upper();
                         startActivity(new Intent(getApplicationContext(), HiddenEvent.class));
                     } else {
                         Thread th = new Thread(myService);
                         th.start();
-                        String oldStr = et_inputData.getText().toString();
-                        String upperStr = myService.toUpper(oldStr);
-                        tv_inputData.setText(oldStr);
-                        tv_outputData.setText(upperStr);
-                        et_inputData.setText("");
+                        process_upper();
                     }
                 }
             }
@@ -71,5 +75,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         unbindService(conn);
         super.onDestroy();
+    }
+    private void process_upper()
+    {
+        String oldStr = et_inputData.getText().toString();
+        String upperStr = myService.toUpper(oldStr);
+        tv_inputData.setText(oldStr);
+        tv_outputData.setText(upperStr);
+        et_inputData.setText("");
     }
 }

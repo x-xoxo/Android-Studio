@@ -4,23 +4,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".HiddenEvent">
+    tools:context=".MainActivity">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginTop="240dp"
-        android:text="축하합니다!"
-        android:textSize="50dp"
+        android:id="@+id/tv_1"
         android:textColor="@color/black"
-        android:layout_gravity="center"/>
-    <TextView
+        android:text="Hello World!"/>
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginTop="60dp"
-        android:text="당신은 숨겨진 페이지를 발견했습니다!"
-        android:textSize="20dp"
-        android:textColor="@color/black"
-        android:layout_gravity="center"/>
+        android:text="Service Bind"
+        android:id="@+id/btn_1"/>
 
 </LinearLayout>
