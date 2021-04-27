@@ -21,39 +21,15 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
     TextView tv1;
     Button btn1;
-    Messenger serviceMessenger;
+    Messenger serviceMessenger = null;
     boolean isBind;
-    final Messenger activityMessenger = new Messenger(new ActivityHandler());
-
-    class ActivityHandler extends Handler {
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            switch (msg.what)
-            {
-                case MyService.SEND_TO_ACTIVITY:        // Service -> Activity 에게 전달한 것
-                    Log.i("test", "SEND_TO_ACTIVITY");
-                    int data1 = msg.getData().getInt("data1");
-                    String data2 = msg.getData().getString("data2");
-                    Log.i("test", "data1 : " + data1 + ", data2 : " + data2);
-                    break;
-                default:
-                    super.handleMessage(msg);
-            }
-        }
-    }
+    final Messenger activityMessenger = new Messenger(new MyHandler());
 
     ServiceConnection conn = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             Log.i("test", "onServiceConnected");
             serviceMessenger = new Messenger(service);
-            Message msg = Message.obtain(null, MyService.REGISTER_CLIENT);
-            msg.replyTo = activityMessenger;
-            try {
-                serviceMessenger.send(msg);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
         }
 
         @Override

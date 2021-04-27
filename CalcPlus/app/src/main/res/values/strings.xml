@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">CalcPlus</string>
+    <string name="btn_calc">계산</string>
+    <string name="btn_history">기록</string>
+</resources>
