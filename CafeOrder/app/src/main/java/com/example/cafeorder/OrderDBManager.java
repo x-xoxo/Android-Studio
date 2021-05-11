@@ -47,6 +47,10 @@ public class OrderDBManager extends SQLiteOpenHelper {
         Log.i("debug", "OrderDBManager.insert()");
         return getWritableDatabase().insert(ORDER_TABLE, null, addValue);
     }
+    public int delete(String whereClause, String[] whereArgs) {
+        Log.i("debug", "OrderDBManager.delete()");
+        return getWritableDatabase().delete(ORDER_TABLE, whereClause, whereArgs);
+    }
     public Cursor query(String[] columns, String selection,
                         String[] selectionArgs, String groupBy,
                         String having, String sortOrder) {

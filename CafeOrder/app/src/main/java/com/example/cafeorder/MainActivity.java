@@ -65,9 +65,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 int amount = Integer.parseInt(et_amount.getText().toString());
                 addOrder(menu, amount);
-                syncList(getOrderList());
-                clearText();
-                myAdapter.notifyDataSetChanged();
+                refreshList();
             }
         });
     }
@@ -85,6 +83,12 @@ public class MainActivity extends AppCompatActivity {
         addValue.put("menu", menu);
         addValue.put("amount", amount);
         getContentResolver().insert(MyContentProvider.URI, addValue);
+    }
+
+    private void refreshList() {
+        syncList(getOrderList());
+        clearText();
+        myAdapter.notifyDataSetChanged();
     }
     private Cursor getOrderList() {
         String[] columns = new String[] {"num", "menu", "amount"};

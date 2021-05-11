@@ -39,6 +39,7 @@ public class ItemActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item);
+        setTitle("주문 상세");
 
         bindService(new Intent(getApplicationContext(), MyService.class), conn, Context.BIND_AUTO_CREATE);
         tv_itemMenuName = (TextView)findViewById(R.id.tv_itemMenuName);
@@ -50,6 +51,7 @@ public class ItemActivity extends AppCompatActivity {
         OrderDTO dto = (OrderDTO) intent.getParcelableExtra("item");
         String menuName = dto.getMenu();
         int amount = dto.getAmount();
+        int num = dto.getPosition();
         tv_itemMenuName.setText(menuName);
         tv_itemAmount.setText(amount+"개");
 
