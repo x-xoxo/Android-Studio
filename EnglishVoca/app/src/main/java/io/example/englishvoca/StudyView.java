@@ -1,5 +1,6 @@
 package io.example.englishvoca;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -16,6 +17,7 @@ import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 
@@ -523,7 +525,7 @@ public class StudyView extends SurfaceView implements Callback {
                     wordForDelete[i] = cursor.getString(1);
                 }
 
-                //reft, right arrow  and close button in circle format
+                // left, right arrow  and close button in circle format
                 canvas.drawBitmap(btnLeftArrow.button_img, btnLeftArrow.x, btnLeftArrow.y, null);
                 canvas.drawBitmap(btnRightArrow.button_img, btnRightArrow.x, btnRightArrow.y, null);
                 canvas.drawBitmap(btnClose.button_img, btnClose.x, btnClose.y, null);
@@ -553,7 +555,7 @@ public class StudyView extends SurfaceView implements Callback {
                 cursor.close();
                 db.close();
             }
-        }               // end of drawall
+        }               // end of DrawAll
 
 
         public void run() {
@@ -827,6 +829,10 @@ public class StudyView extends SurfaceView implements Callback {
                 int sss = Integer.parseInt(FileSplit0.questionNum[questionNumber][6].trim());
 
                 dicOk = 0;
+                //---------------------
+                // 1st Way to insert DB
+                //---------------------
+                /*
                 SQLiteDatabase db = m_helper.getWritableDatabase();
                 String sql = String.format("INSERT INTO englishWordTable VALUES(NULL, '%s', '%s');",
                         // sss+1 은 정답에 해당되는 영어단어
@@ -834,9 +840,33 @@ public class StudyView extends SurfaceView implements Callback {
                         FileSplit0.questionNum[questionNumber][sss + 1], FileSplit0.questionNum[questionNumber][1]);
                 db.execSQL(sql);
                 db.close();
-
-                Toast toast = Toast.makeText(mContext, "단어가 저장되었습니다.", Toast.LENGTH_SHORT);
-                toast.show();
+                */
+                //---------------------
+                // 2nd Way to insert DB
+                //---------------------
+                cursor = m_helper.getReadableDatabase().query(MyDBHelper.TABLE, null,null,null,null,null,null);
+                if (cursor != null)
+                {
+                    boolean flag = false;
+                    while (cursor.moveToNext())
+                    {
+                        String str = cursor.getString(1);
+                        if (str.equals(FileSplit0.questionNum[questionNumber][sss + 1]))
+                        {
+                            flag = true;
+                        }
+                    }
+                    if (!flag)
+                    {
+                        ContentValues values = new ContentValues();
+                        values.put("eWord", FileSplit0.questionNum[questionNumber][sss + 1]);
+                        values.put("kWord", FileSplit0.questionNum[questionNumber][1]);
+                        m_helper.insert(values);
+                        Toast.makeText(mContext, "단어가 저장되었습니다.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(mContext, "이미 있는 단어입니다.", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
 
         //카카오톡으로 문제 보내기
@@ -1093,21 +1123,28 @@ public class StudyView extends SurfaceView implements Callback {
             super(context, name, factory, version);
         }
 
+        private static final String TABLE = "englishWordTable";
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-
-            db.execSQL("CREATE TABLE englishWordTable (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+            Log.d("Debug", "MyDBHelper.onCreate()");
+            db.execSQL("CREATE TABLE " + TABLE +
+                    "(_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     " eWord TEXT, kWord TEXT);");
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+            Log.d("Debug", "MyDBHelper.onUpgrade()");
             db.execSQL("DROP TABLE IF EXISTS englishWordTable");
             onCreate(db);
         }
-    }          //end of MyDBHelper
+
+        public long insert(ContentValues addValue) {
+            Log.d("Debug", "MyDBHelper.insert()");
+            return getWritableDatabase().insert(TABLE, null, addValue);
+        }
+    } // End of MyDBHelper
 
 
 
