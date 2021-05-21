@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">DW Library</string>
+    <string name="book_title">Book Title : </string>
+    <string name="book_author">Author : </string>
+    <string name="book_publisher">Publisher : </string>
+    <string name="book_summary">Description : </string>
+    <string name="submit">Submit</string>
+    <string name="search">Search</string>
+    <string name="rent_status">Rent Status : </string>
+    <string name="rent_yes">Rentable</string>
+    <string name="rent_no">Borrowing</string>
+    <string name="rent">Rent</string>
+    <string name="btn_return">Return</string>
+    <string name="book_detail_info">Book Detail Info</string>
+    <string name="book_search_result">Book Search Result</string>
+</resources>

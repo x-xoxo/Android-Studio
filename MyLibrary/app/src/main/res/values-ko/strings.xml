@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">동욱 도서관</string>
+    <string name="book_title">책 제목 : </string>
+    <string name="book_author">지은이 : </string>
+    <string name="book_publisher">출판사 : </string>
+    <string name="book_summary">줄거리 : </string>
+    <string name="submit">입력</string>
+    <string name="search">조회</string>
+    <string name="rent_status">대여 상태 : </string>
+    <string name="rent_yes">대여 가능</string>
+    <string name="rent_no">대여 중</string>
+    <string name="rent">대여</string>
+    <string name="btn_return">반납</string>
+    <string name="book_detail_info">도서 상세정보</string>
+    <string name="book_search_result">도서검색 결과</string>
+</resources>
