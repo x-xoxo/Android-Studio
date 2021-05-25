@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void registerBook() {
+        Log.d("debug", "MainActivity.registerBook()");
         String title = ((TextView)findViewById(R.id.mainActivity_et_title)).getText().toString();
         String author = ((TextView)findViewById(R.id.mainActivity_et_author)).getText().toString();
         String publisher = ((TextView)findViewById(R.id.mainActivity_et_publisher)).getText().toString();
