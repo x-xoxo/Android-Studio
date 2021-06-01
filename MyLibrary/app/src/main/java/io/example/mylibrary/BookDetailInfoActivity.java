@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -58,15 +60,9 @@ public class BookDetailInfoActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (rental != 0)
                     return;
-                ContentValues values = new ContentValues();
-                rental = 1;
-                values.put("Rental", rental);
-                String selection = "_No = ?";
-                String[] selectionArgs = new String[] {String.valueOf(num)};
-                getContentResolver().update(MyContentProvider.URI, values, selection, selectionArgs);
-                tv_rental.setText(getResources().getString(R.string.rent_no));
-                btn_borrow.setEnabled(false);
-                btn_return.setEnabled(true);
+                toggleRental();
+                syncDB(getBookList());
+                toggleButton();
             }
         });
         btn_return.setOnClickListener(new View.OnClickListener() {
@@ -74,16 +70,55 @@ public class BookDetailInfoActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (rental == 0)
                     return;
-                ContentValues values = new ContentValues();
-                rental = 0;
-                values.put("Rental", rental);
-                String selection = "_No = ?";
-                String[] selectionArgs = new String[] {String.valueOf(num)};
-                getContentResolver().update(MyContentProvider.URI, values, selection, selectionArgs);
-                tv_rental.setText(getResources().getString(R.string.rent_yes));
-                btn_borrow.setEnabled(true);
-                btn_return.setEnabled(false);
+                toggleRental();
+                syncDB(getBookList());
+                toggleButton();
             }
         });
+    }
+
+    private void toggleButton()
+    {
+        btn_borrow.setEnabled(!btn_borrow.isEnabled());
+        btn_return.setEnabled(!btn_return.isEnabled());
+    }
+
+    private void syncDB(Cursor c) {
+        Log.d("debug", "BookListActivity.syncList()");
+        if (c != null) {
+            while(c.moveToNext()) {
+                int no = c.getInt(0);
+                String title = c.getString(1);
+                String author = c.getString(2);
+                String publisher = c.getString(3);
+                String summary = c.getString(4);
+                int rental = c.getInt(5);
+                if (no == num)
+                {
+                    tv_title.setText(title);
+                    tv_author.setText(author);
+                    tv_publisher.setText(publisher);
+                    tv_summary.setText(summary);
+                    tv_rental.setText((rental == 0) ? getResources().getString(R.string.rent_yes) : getResources().getString(R.string.rent_no));
+                    break;
+                }
+            }
+        }
+    }
+
+    private Cursor getBookList() {
+        Log.d("debug", "BookListActivity.getBookList()");
+        String[] columns = new String[] {"_No", "Title", "Author", "Publisher", "Summary", "Rental"};
+        return getContentResolver().query(MyContentProvider.URI, columns, null, null, null);
+    }
+
+    private void toggleRental() {
+        if (rental == 0) rental = 1;
+        else rental = 0;
+        ContentValues values = new ContentValues();
+        values.put("Rental", rental);
+        String selection = "_No = ?";
+        String[] selectionArgs = new String[] {String.valueOf(num)};
+        getContentResolver().update(MyContentProvider.URI, values, selection, selectionArgs);
     }
 }
